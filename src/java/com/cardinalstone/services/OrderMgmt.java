@@ -97,4 +97,26 @@ public class OrderMgmt {
 
     }
 
+    public Response fetchAllOrders(String token) {
+
+        if (Objects.isNull(token) || token.isEmpty()) {
+
+            return Response.ok("Token is empty").build();
+
+        }
+
+        //Probably have to do annotated security or cache.
+        List<UserEntity> userEntities = em.createQuery("SELECT u FROM UserEntity u WHERE u.token =:token", UserEntity.class).setParameter("token", token).getResultList();
+
+        if (userEntities.isEmpty()) {
+            return Response.ok("Either no such user exists, or token has expired or user logged out").build();
+
+        }
+
+        List<UserOrder> orders = em.createQuery("SELECT o FROM UserOrder o", UserOrder.class).getResultList();
+
+        return Response.ok(orders).build();
+
+    }
+
 }
