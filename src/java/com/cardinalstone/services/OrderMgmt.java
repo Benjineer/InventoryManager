@@ -119,4 +119,38 @@ public class OrderMgmt {
 
     }
 
+    public Response editOrder(String token, JsonObject jsonOrder) {
+
+        if (Objects.isNull(token) || token.isEmpty()) {
+
+            return Response.ok("Token is empty").build();
+
+        }
+
+        if (Objects.isNull(jsonOrder) || !jsonOrder.containsKey("deliveryAddress")) {
+
+            return Response.ok("Request Body is empty or missing critical keys").build();
+
+        }
+
+        //Probably have to do annotated security or cache.
+        List<UserEntity> userEntities = em.createQuery("SELECT u FROM UserEntity u WHERE u.token =:token", UserEntity.class).setParameter("token", token).getResultList();
+
+        if (userEntities.isEmpty()) {
+            return Response.ok("Either no such user exists, or token has expired or user logged out").build();
+
+        }
+
+        String deliveryAddress = jsonOrder.getString("deliveryAddress");
+
+        UserOrder userOrder = new UserOrder();
+        userOrder.setDeliveryAddress(deliveryAddress);
+        userOrder.setOrderDate(Date.from(Instant.now()));
+
+        em.merge(userOrder);
+
+        return Response.ok(userOrder.toJson()).build();
+
+    }
+
 }
