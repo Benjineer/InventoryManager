@@ -7,14 +7,8 @@ package com.cardinalstone.restapi;
 
 import com.cardinalstone.enums.Role;
 import com.cardinalstone.services.UserMgmt;
-import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.ejb.EJB;
+import com.cardinalstone.utils.Auth;
+import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -40,7 +34,7 @@ public class UserAPI {
     @Path("create")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(@QueryParam("username") String username, @QueryParam("password") String password, @QueryParam("role") String role) {
+    public Response createUser(@QueryParam("username") Optional<String> username, @QueryParam("password") Optional<String> password, @QueryParam("role") Optional<String> role) {
 
         return userService.createUser(username, password, role);
 
@@ -49,7 +43,7 @@ public class UserAPI {
     @Path("login")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(@QueryParam("username") String username, @QueryParam("password") String password) {
+    public Response login(@QueryParam("username") Optional<String> username, @QueryParam("password") Optional<String> password) {
 
         return userService.login(username, password);
 
@@ -57,10 +51,11 @@ public class UserAPI {
 
     @Path("logout")
     @PUT
+    @Auth({Role.USER})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response logout(@QueryParam("token") String token) {
+    public Response logout() {
 
-        return userService.logout(token);
+        return userService.logout();
 
     }
 
