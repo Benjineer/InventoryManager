@@ -29,14 +29,14 @@ import javax.ws.rs.core.Response;
 public class UserAPI {
 
     @Inject
-    private UserMgmt userService;
+    private UserMgmt userMgmt;
 
     @Path("create")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(@QueryParam("username") Optional<String> username, @QueryParam("password") Optional<String> password, @QueryParam("role") Optional<String> role) {
 
-        return userService.createUser(username, password, role);
+        return userMgmt.createUser(username, password, role);
 
     }
 
@@ -45,7 +45,7 @@ public class UserAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(@QueryParam("username") Optional<String> username, @QueryParam("password") Optional<String> password) {
 
-        return userService.login(username, password);
+        return userMgmt.login(username, password);
 
     }
 
@@ -55,7 +55,7 @@ public class UserAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout() {
 
-        return userService.logout();
+        return userMgmt.logout();
 
     }
 
