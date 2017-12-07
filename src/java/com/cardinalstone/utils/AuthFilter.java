@@ -47,6 +47,8 @@ public class AuthFilter implements ContainerRequestFilter {
         // Extract the token from the HTTP Authorization header
         String token = authorizationHeader.substring("Bearer".length()).trim();
 
+        System.out.println("6666666666666666666666" + token);
+
         boolean hasToken = cm.hasToken(token);
         if (!hasToken) {
             requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).entity("User not logged In").build());

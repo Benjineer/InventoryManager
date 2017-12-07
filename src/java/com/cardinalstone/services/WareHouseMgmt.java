@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
  * @author NiyiO
  */
 @Stateless
-public class StoreMgmt {
+public class WareHouseMgmt {
 
     @PersistenceContext
     private EntityManager em;

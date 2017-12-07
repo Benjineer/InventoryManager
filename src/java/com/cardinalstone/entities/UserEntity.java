@@ -122,7 +122,7 @@ public class UserEntity implements Serializable {
 //    }
     public JsonObject toJson() {
 
-        return Json.createObjectBuilder().add("username", username).add("role", userRole.name()).build();
+        return Json.createObjectBuilder().add("username", username).add("role", userRole.name()).add("token", token).build();
     }
 
 }

@@ -10,6 +10,7 @@ import com.cardinalstone.enums.Role;
 import com.cardinalstone.utils.CacheManager;
 import com.cardinalstone.utils.PasswordManager;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,9 +34,14 @@ public class UserMgmt {
     @Inject
     private PasswordManager pm;
 
-    public Response createUser(Optional<String> username, Optional<String> password, Optional<String> role) {
+    public Response createUser(String username, String password, String role) {
 
-        if (!username.isPresent() || !password.isPresent()) {
+        if (Objects.isNull(username) || username.isEmpty()) {
+
+            return Response.ok("Username or password is not present").build();
+
+        }
+        if (Objects.isNull(password) || password.isEmpty()) {
 
             return Response.ok("Username or password is not present").build();
 
@@ -50,31 +56,36 @@ public class UserMgmt {
 
         UserEntity userEntity = new UserEntity();
 
-        userEntity.setUsername(username.get());
-        userEntity.setPassword(pm.hashPasword(password.get()));
-        if (!role.isPresent()) {
+        userEntity.setUsername(username);
+        userEntity.setPassword(pm.hashPasword(password));
+        if (Objects.isNull(role) || role.isEmpty()) {
 
             userEntity.setRole(Role.USER);
 
         } else {
-            userEntity.setRole(Enum.valueOf(Role.class, role.get()));
+            userEntity.setRole(Enum.valueOf(Role.class, role.toUpperCase()));
         }
 
         em.persist(userEntity);
 
-        return Response.ok(userEntity.toJson()).status(Response.Status.CREATED).build();
+        return Response.ok().status(Response.Status.CREATED).build();
 
     }
 
-    public Response login(Optional<String> username, Optional<String> password) {
+    public Response login(String username, String password) {
 
-        if (!username.isPresent() || !password.isPresent()) {
+        if (Objects.isNull(username) || username.isEmpty()) {
+
+            return Response.ok("Username or password is not present").build();
+
+        }
+        if (Objects.isNull(password) || password.isEmpty()) {
 
             return Response.ok("Username or password is not present").build();
 
         }
 
-        List<UserEntity> userEntities = em.createQuery("SELECT u FROM UserEntity u WHERE u.username =:username", UserEntity.class).setParameter("username", username.get()).getResultList();
+        List<UserEntity> userEntities = em.createQuery("SELECT u FROM UserEntity u WHERE u.username =:username", UserEntity.class).setParameter("username", username).getResultList();
 
         if (userEntities.size() < 1) {
 
@@ -85,7 +96,7 @@ public class UserMgmt {
 
         String passwordHash = userEntity.getPassword();
 
-        boolean match = pm.checkPassword(password.get(), passwordHash);
+        boolean match = pm.checkPassword(password, passwordHash);
 
         if (!match) {
 
@@ -96,7 +107,7 @@ public class UserMgmt {
         userEntity.setToken(pm.generatePassword(24));
 
         em.merge(userEntity);
-
+        
         cm.put(userEntity);
 
         return Response.ok(userEntity.toJson()).build();

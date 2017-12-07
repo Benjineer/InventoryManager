@@ -46,7 +46,7 @@ public class CacheManager {
     }
 
     public UserEntity getUser(String key) {
-        return cache.stream().filter(u -> u.getToken().equals(key)).findFirst().get();
+        return cache.stream().filter(u -> u.getToken().matches(key)).findFirst().get();
     }
 
     public void remove(UserEntity userEntity) {

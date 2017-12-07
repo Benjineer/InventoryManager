@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cardinalstone.restapi;
+package com.cardinalstone.rest;
 
 import com.cardinalstone.enums.Role;
 import com.cardinalstone.services.UserMgmt;
@@ -34,7 +34,7 @@ public class UserAPI {
     @Path("create")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(@QueryParam("username") Optional<String> username, @QueryParam("password") Optional<String> password, @QueryParam("role") Optional<String> role) {
+    public Response createUser(@QueryParam("username") String username, @QueryParam("password") String password, @QueryParam("role") String role) {
 
         return userMgmt.createUser(username, password, role);
 
@@ -43,7 +43,7 @@ public class UserAPI {
     @Path("login")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(@QueryParam("username") Optional<String> username, @QueryParam("password") Optional<String> password) {
+    public Response login(@QueryParam("username") String username, @QueryParam("password") String password) {
 
         return userMgmt.login(username, password);
 
@@ -51,7 +51,7 @@ public class UserAPI {
 
     @Path("logout")
     @PUT
-    @Auth({Role.USER})
+    @Auth({Role.ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout() {
 
